@@ -9,10 +9,10 @@ import sqlite3
 def applicatie():
     dbconnectie = sqlite3.connect("Boekenlijst.db")
     
-    boek=Boeken(dbconnectie)
-    locatie=Locatie(dbconnectie)
+    boek = Boeken(dbconnectie)
+    locatie = Locatie(dbconnectie)
     
-    While True:
+    while True:
         print("Welkom in onze Boekenlijst, maak hieronder uw keuze:")
         print(" '1' = een boek toevoegen")
         print(" '2' = de volledige lijst tonen")
@@ -21,8 +21,46 @@ def applicatie():
         print(" '5' = een rapport afdrukken in CSV of Excel")
         print(" '0' = afsluiten van de applicatie")
         
+        keuze = input("Kies uw volgende stap: ")
         
-
+        if keuze == "1":
+            titel = input("Titel: ")
+            auteur = input("Auteur: ")
+            jaar = input ("Uitgavejaar: ")
+            boek = Boeken(dbconnectie, Titel=titel, Auteur = auteur, UitgaveJaar= jaar)
+            boek.toevoegen()
+            print("Boek toegevoegd!")
+        
+        elif keuze == "2":
+            for books in boek.rapport_tonen():
+                print(books)
+                
+        elif keuze =="3":
+            boekID = input ("BoekID:")
+            depot = input("NaamDepot: ")
+            plank = input("Plank: ")
+            locatie = Locatie (dbconnectie, boekID= boekID, NaamDepot= depot, Plank = plank )
+            locatie.toevoegen()
+            print("Locatie is toegevoegd!")
+            
+        elif keuze =="4":
+            for location in locatie.rapport_tonen():
+                print(location)
+                
+        elif keuze =="5":
+            pass
+        
+        elif keuze =="0":
+            print("de applicatie wordt afgesloten")
+            break
+        
+        else:
+            print("ongeldige keuze")
+            
+    dbconnectie.close()
+        
+if __name__=="__main__":
+    applicatie() 
     
 
 
