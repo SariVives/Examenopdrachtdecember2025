@@ -29,8 +29,8 @@ def applicatie():
             titel = input("Titel: ")
             auteur = input("Auteur: ")
             jaar = input ("UitgaveJaar: ")
-            boek = Boeken(dbconnectie, Titel=titel, Auteur = auteur, UitgaveJaar= jaar)
-            boek.toevoegen()
+           
+            boek.toevoegen(titel,auteur, jaar)
             print("Boek toegevoegd!")
         
         elif keuze == "2":
@@ -41,8 +41,8 @@ def applicatie():
             boekID = input ("BoekID:")
             depot = input("NaamDepot: ")
             plank = input("Plank: ")
-            locatie = Locatie (dbconnectie, boekID= boekID, NaamDepot= depot, Plank = plank )
-            locatie.toevoegen()
+            
+            locatie.toevoegen(boekID, depot, plank)
             print("Locatie is toegevoegd!")
             
         elif keuze =="4":
@@ -51,7 +51,7 @@ def applicatie():
                 
         elif keuze =="5":
             boek.export_csv()
-            print("de boekenlijst is naar een csv bestand geëxporteerd")
+            print("de boekenlijst is naar een csv bestand geëxporteerd.")
             
         
         elif keuze =="0":
