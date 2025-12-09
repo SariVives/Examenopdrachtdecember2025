@@ -6,6 +6,8 @@ from Modules.boek import Boeken
 from Modules.locatie import Locatie
 import sqlite3
 
+
+
 def applicatie():
     dbconnectie = sqlite3.connect("Boekenlijst.db")
     
@@ -26,7 +28,7 @@ def applicatie():
         if keuze == "1":
             titel = input("Titel: ")
             auteur = input("Auteur: ")
-            jaar = input ("Uitgavejaar: ")
+            jaar = input ("UitgaveJaar: ")
             boek = Boeken(dbconnectie, Titel=titel, Auteur = auteur, UitgaveJaar= jaar)
             boek.toevoegen()
             print("Boek toegevoegd!")
@@ -48,7 +50,9 @@ def applicatie():
                 print(location)
                 
         elif keuze =="5":
-            pass
+            boek.export_csv()
+            print("de boekenlijst is naar een csv bestand geëxporteerd")
+            
         
         elif keuze =="0":
             print("de applicatie wordt afgesloten")
