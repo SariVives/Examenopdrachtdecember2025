@@ -1,0 +1,19 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Dec  9 22:43:55 2025
+
+@author: tinie
+"""
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtuele omgeving
+.venv/
+venv/
+
+# Databasebestanden
+*.db
+
+# Instellingenbestand
+Examenopdrachtdecember2025/config.py
