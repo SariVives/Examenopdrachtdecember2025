@@ -1,33 +1,52 @@
 # -*- coding: utf-8 -*-
 """
-aparte modules maken:Module Boek
+Repository voor boeken
 
 """
 import csv
+from Modules.domein import Boek
 
-class Boeken:
+class BoekRepository:
     def __init__(self , dbconnectie):
         self.dbconnectie = dbconnectie
         
-    def toevoegen(self, Titel, Auteur, UitgaveJaar):
+    def toevoegen(self, boek):
         cursor = self.dbconnectie.cursor()
-        cursor.execute("INSERT INTO Boeken (Titel, Auteur, UitgaveJaar) VALUES (?,?,?)",(Titel, Auteur, UitgaveJaar))
+        cursor.execute("INSERT INTO Boeken (Titel, Auteur, UitgaveJaar) VALUES (?,?,?)",(boek.titel, boek.auteur, boek.uitgave_jaar))
         self.dbconnectie.commit()
     
     def rapport_tonen(self):
         cursor = self.dbconnectie.cursor()
         cursor.execute("SELECT * FROM Boeken")
-        return cursor.fetchall()
+        boeken = []
+        
+        for rij in cursor.fetchall():
+            boek = Boek(rij[0], rij[1], rij[2], rij[3])
+            boeken.append(boek)
+        return boeken
     
-    def export_csv(self,bestand="boekenlijst.csv"):
+    def aanpassen(self, boek):
+        cursor = self.dbconnectie.cursor()
+        cursor.execute("UPDATE Boeken SET Titel = ?, Auteur = ?, UitgaveJaar = ? WHERE id = ?", (boek.titel, boek.auteur, boek.uitgave_jaar, boek.boek_id))
+        self.dbconnectie.commit() 
+        
+    def verwijderen(self, boek_id):
+        cursor = self.dbconnectie.cursor()
+        # locatie van het boek verwijderen
+        cursor.execute("DELETE FROM Locatie WHERE boekID = ?", (boek_id,))
+        # Dan boek verwijderen
+        cursor.execute("DELETE FROM Boeken WHERE id = ?",(boek_id,))
+        self.dbconnectie.commit()
+    
+    def export_csv(self, bestand="boekenlijst.csv"):
         cursor = self.dbconnectie.cursor()
         cursor.execute("SELECT * FROM Boeken")
         data = cursor.fetchall()
         
         kolommen=[description[0] for description in cursor.description]
         
-        with open(bestand,"w",newline="", encoding="utf-8") as f:
-            writer = csv.writer(f)
+        with open(bestand,"w",newline="", encoding="utf-8") as bestand_csv:
+            writer = csv.writer(bestand_csv)
             writer.writerow(kolommen)
             writer.writerows(data)
         

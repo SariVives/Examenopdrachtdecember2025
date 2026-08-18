@@ -1,26 +1,33 @@
 # -*- coding: utf-8 -*-
 """
-Mijn examenopdracht voor Python December 2025
+Mijn examenopdracht voor Python December 2025 herexamenopdracht augustus 2026
 """
-from Modules.boek import Boeken
-from Modules.locatie import Locatie
+
 import sqlite3
+import config
+from Modules.domein import Boek, Locatie
+from Modules.boek import BoekRepository
+from Modules.locatie import LocatieRepository
 
 
 
 def applicatie():
-    dbconnectie = sqlite3.connect("Boekenlijst.db")
+    dbconnectie = sqlite3.connect(config.DB_PATH)
     
-    boek = Boeken(dbconnectie)
-    locatie = Locatie(dbconnectie)
+    boek_repository = BoekRepository(dbconnectie)
+    locatie_repository = LocatieRepository(dbconnectie)
     
     while True:
         print("Welkom in onze Boekenlijst, maak hieronder uw keuze:")
         print(" '1' = een boek toevoegen")
         print(" '2' = de volledige lijst tonen")
-        print(" '3' = een locatie toevoegen")
-        print(" '4' = alle locaties tonen")
-        print(" '5' = een rapport afdrukken in CSV of Excel")
+        print(" '3' = een boek aanpassen")
+        print(" '4' = een boek verwijderen")
+        print(" '5' = een locatie toevoegen")
+        print(" '6' = alle locaties tonen")
+        print(" '7' = een locatie aanpassen")
+        print(" '8' = een locatie verwijderen")
+        print(" '9' = een rapport afdrukken in CSV")
         print(" '0' = afsluiten van de applicatie")
         
         keuze = input("Kies uw volgende stap: ")
@@ -28,29 +35,66 @@ def applicatie():
         if keuze == "1":
             titel = input("Titel: ")
             auteur = input("Auteur: ")
-            jaar = input ("UitgaveJaar: ")
+            uitgave_jaar = int(input ("UitgaveJaar: "))
            
-            boek.toevoegen(titel,auteur, jaar)
+            boek = Boek(None, titel, auteur, uitgave_jaar)
+           
+            boek_repository.toevoegen(boek)
             print("Boek toegevoegd!")
         
         elif keuze == "2":
-            for books in boek.rapport_tonen():
-                print(books)
-                
-        elif keuze =="3":
-            boekID = input ("BoekID:")
-            depot = input("NaamDepot: ")
-            plank = input("Plank: ")
+            boeken = boek_repository.rapport_tonen()
+            for boek in boeken:
+                print(boek)
+        
+        elif keuze == "3":
+            boek_id = int(input("BoekID van het boek dat je wilt aanpassen: "))
+            titel = input("Nieuwe titel: ")
+            auteur = input("Nieuwe auteur: ")
+            uitgave_jaar = int(input("Nieuw uitgavejaar: "))
             
-            locatie.toevoegen(boekID, depot, plank)
-            print("Locatie is toegevoegd!")
+            boek = Boek(boek_id, titel, auteur, uitgave_jaar)
+            boek_repository.aanpassen(boek)
+            print("Boek aangepast!")
             
-        elif keuze =="4":
-            for location in locatie.rapport_tonen():
-                print(location)
+        elif keuze == "4":
+            boek_id = int(input("BoekID van het boek dat je wilt verwijderen: "))
+            boek_repository.verwijderen(boek_id)
+            print("Boek verwijderd!")
+        
                 
         elif keuze =="5":
-            boek.export_csv()
+            boek_id = int(input ("BoekID:"))
+            naam_depot = input("NaamDepot: ")
+            plank = int(input("Plank: "))
+            
+            locatie = Locatie(boek_id, naam_depot, plank)
+            
+            locatie_repository.toevoegen(locatie)
+            print("Locatie is toegevoegd!")
+            
+        elif keuze =="6":
+            locaties = locatie_repository.rapport_tonen()
+            
+            for locatie in locaties:
+                print(locatie)
+                
+        elif keuze == "7":
+            boek_id = int(input("BoekID van het boek waarvan je de locatie wilt aanpassen: "))
+            naam_depot = input("Nieuwe naam depot: ")
+            plank = int(input("Nieuwe plank: "))
+            
+            locatie_repository.aanpassen(locatie)
+            print("Locatie aangepast!")
+            
+        elif keuze == "8":
+            boek_id = int(input("BoekID van de locatie die je wilt verwijderen: "))
+            
+            locatie_repository.verwijderen(boek_id)
+            print("Locatie verwijderd!")
+                
+        elif keuze =="9":
+            boek_repository.export_csv()
             print("de boekenlijst is naar een csv bestand geëxporteerd.")
             
         

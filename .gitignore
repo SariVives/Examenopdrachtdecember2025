@@ -15,5 +15,4 @@ venv/
 # Databasebestanden
 *.db
 
-# Instellingenbestand
-Examenopdrachtdecember2025/config.py
+
